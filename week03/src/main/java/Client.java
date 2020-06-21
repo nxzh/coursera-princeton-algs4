@@ -37,5 +37,6 @@ public class Client {
             segment.draw();
         }
         StdDraw.show();
+
     }
 }
