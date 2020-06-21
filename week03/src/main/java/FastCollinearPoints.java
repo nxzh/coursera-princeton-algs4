@@ -12,6 +12,7 @@ public class FastCollinearPoints {
         checkNull(points);
         checkLength(points);
         this.points = Arrays.copyOf(points, points.length);
+        Arrays.sort(points, (p1, p2) -> p1.compareTo(p2));
         checkDuplicate(this.points);
         if (points.length >= 4) {
             calcSegments();
@@ -76,7 +77,6 @@ public class FastCollinearPoints {
     }
 
     private void checkDuplicate(Point[] points) {
-        Arrays.sort(points, (p1, p2) -> p1.compareTo(p2));
         for (int i = 1; i < points.length; i++) {
             if (points[i].compareTo(points[i - 1]) == 0) {
                 throw new IllegalArgumentException();
