@@ -10,9 +10,8 @@ public class BruteCollinearPoints {
 
     public BruteCollinearPoints(Point[] points) {
         checkNull(points);
-        checkLength(points);
         this.points = Arrays.copyOf(points, points.length);
-        Arrays.sort(points, (p1, p2) -> p1.compareTo(p2));
+        Arrays.sort(this.points, (p1, p2) -> p1.compareTo(p2));
         checkDuplicate(this.points);
         if (points.length >= 4) {
             calcSegments();
@@ -30,7 +29,7 @@ public class BruteCollinearPoints {
         if (segments != null) {
             return Arrays.copyOf(segments, segments.length);
         }
-        return null;
+        return new LineSegment[0];
     }
 
     private void calcSegments() {

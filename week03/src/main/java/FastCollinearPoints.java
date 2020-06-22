@@ -10,9 +10,8 @@ public class FastCollinearPoints {
 
     public FastCollinearPoints(Point[] points) {
         checkNull(points);
-        checkLength(points);
         this.points = Arrays.copyOf(points, points.length);
-        Arrays.sort(points, (p1, p2) -> p1.compareTo(p2));
+        Arrays.sort(this.points, (p1, p2) -> p1.compareTo(p2));
         checkDuplicate(this.points);
         if (points.length >= 4) {
             calcSegments();
@@ -30,13 +29,14 @@ public class FastCollinearPoints {
         if (segments != null) {
             return Arrays.copyOf(segments, segments.length);
         }
-        return null;
+        return new LineSegment[0];
     }
 
     private void calcSegments() {
         Stack<LineSegment> segmentStack = new Stack<>();
-        Point[] pointsCopy = Arrays.copyOf(points, points.length);
+        Point[] pointsCopy = null; //Arrays.copyOf(points, points.length);
         for (int i = 0; i < points.length; i++) {
+            pointsCopy = Arrays.copyOf(points, points.length);
             Arrays.sort(pointsCopy, points[i].slopeOrder());
             addLineSegment(segmentStack, pointsCopy, points[i]);
         }
@@ -47,23 +47,22 @@ public class FastCollinearPoints {
         int j = 0, k = 0;
         boolean isAdded = false;
         while (k < pointsCopy.length) {
-            if (Double.compare(pi.slopeTo(pointsCopy[j]), pi.slopeTo(pointsCopy[k])) != 0) {
+            int slopeDiff = Double.compare(pi.slopeTo(pointsCopy[j]), pi.slopeTo(pointsCopy[k]));
+            if (slopeDiff == 0 && pi.compareTo(pointsCopy[k]) > 0) {
+                isAdded = true;
+            }
+            if (slopeDiff != 0) {
                 if (!isAdded && k - j >= 3) {
-                    Point end = pointsCopy[k - 1].compareTo(pointsCopy[j]) > 0 ? pointsCopy[k - 1] : pointsCopy[j];
-                    stacks.push(new LineSegment(pi, end));
+                    stacks.push(new LineSegment(pi, pointsCopy[k-1]));
                 }
                 j = k;
                 isAdded = false;
             } else {
-                if (pi.compareTo(pointsCopy[k]) > 0) {
-                    isAdded = true;
-                }
                 k++;
             }
         }
         if (!isAdded && k - j >= 3) {
-            Point end = pointsCopy[k - 1].compareTo(pointsCopy[j]) > 0 ? pointsCopy[k - 1] : pointsCopy[j];
-            stacks.push(new LineSegment(pi, end));
+            stacks.push(new LineSegment(pi, pointsCopy[k-1]));
         }
     }
 
@@ -92,12 +91,6 @@ public class FastCollinearPoints {
             if (p == null) {
                 throw new IllegalArgumentException();
             }
-        }
-    }
-
-    private void checkLength(Point[] points) {
-        if (points.length < 4) {
-            throw new IllegalArgumentException();
         }
     }
 }

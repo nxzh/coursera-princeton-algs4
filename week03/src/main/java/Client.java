@@ -19,8 +19,8 @@ public class Client {
         // draw the points
         StdDraw.setCanvasSize(1024, 1024);
         StdDraw.enableDoubleBuffering();
-        StdDraw.setXscale(0, 32768);
-        StdDraw.setYscale(0, 32768);
+        StdDraw.setXscale(-2000, 32768);
+        StdDraw.setYscale(-2000, 32768);
         StdDraw.setPenRadius(0.03);
         StdDraw.setPenColor(Color.RED);
         for (Point p : points) {
@@ -37,6 +37,5 @@ public class Client {
             segment.draw();
         }
         StdDraw.show();
-
     }
 }
