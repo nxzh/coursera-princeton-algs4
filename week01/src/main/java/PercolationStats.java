@@ -35,8 +35,8 @@ public class PercolationStats {
             trials[i] = (t.numberOfOpenSites() * 1.0) / (sz * sz);
         }
         mean = StdStats.mean(trials);
-        stddev = StdStats.stddev(trials);;
-        double factor = FACTOR * Math.sqrt(stddev()) / Math.sqrt(trials.length);
+        stddev = StdStats.stddev(trials);
+        double factor = FACTOR * stddev() / Math.sqrt(trials.length);
         confidenceLo = mean - factor;
         confidenceHi = mean + factor;
     }
@@ -66,9 +66,8 @@ public class PercolationStats {
         int n = Integer.parseInt(args[0]);
         int t = Integer.parseInt(args[1]);
         PercolationStats stats = new PercolationStats(n, t);
-        StdOut.println(stats.mean());
-        StdOut.println(stats.stddev());
-        StdOut.println(stats.confidenceLo());
-        StdOut.println(stats.confidenceHi());
+        StdOut.println("mean\t\t\t\t\t= " + stats.mean());
+        StdOut.println("stddev\t\t\t\t\t= " + stats.stddev());
+        StdOut.println("95% confidence interval\t= [" + stats.confidenceLo() + ", " + stats.confidenceHi + "]");
     }
 }
