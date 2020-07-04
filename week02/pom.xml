@@ -11,5 +11,13 @@
 
     <artifactId>week02</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>algs4</groupId>
+            <artifactId>algs4</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../lib/algs4.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>
