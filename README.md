@@ -2,7 +2,7 @@
 
 ### Scores
 
-Week01 - 
+Week01 - 100
 
 Week02 - 100
 
