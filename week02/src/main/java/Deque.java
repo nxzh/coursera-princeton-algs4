@@ -2,134 +2,124 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
-
-    private static final int DEFAULT_INIT_CAPACITY = 4;
-    private Item[] elements;
-    private int head;
-    private int size;
-
-    // construct an empty deque
-    public Deque() {
-        elements = (Item[]) new Object[DEFAULT_INIT_CAPACITY];
+    private static class DoubleLinkedNode<Item> {
+        DoubleLinkedNode<Item> prev;
+        DoubleLinkedNode<Item> next;
+        Item data;
     }
 
-    // is the deque empty?
+    private DoubleLinkedNode<Item> head = null;
+    private DoubleLinkedNode<Item> tail = null;
+    private int size = 0;
+
     public boolean isEmpty() {
         return size == 0;
     }
 
-    // return the number of items on the deque
     public int size() {
         return size;
     }
 
-    // add the item to the front
     public void addFirst(Item item) {
         if (item == null) {
             throw new IllegalArgumentException();
         }
-        enlarge();
-        head = (head - 1) & (elements.length - 1);
-        elements[head] = item;
+        DoubleLinkedNode<Item> oldHead = head;
+        head = new DoubleLinkedNode<>();
+        head.data = item;
+        head.next = oldHead;
+        if (oldHead != null) {
+            oldHead.prev = head;
+        } else {
+            tail = head;
+        }
         size++;
     }
 
-    private void enlarge() {
-        if (size == elements.length) {
-            resize(elements.length << 1);
-        }
-    }
-
-    private void resize(int n) {
-        Item[] temp = (Item[]) new Object[n];
-        Iterator<Item> iter = iterator();
-        int i = 0;
-        while (iter.hasNext()) {
-            temp[i++] = iter.next();
-        }
-        elements = temp;
-        head = 0;
-    }
-
-    // add the item to the back
     public void addLast(Item item) {
         if (item == null) {
             throw new IllegalArgumentException();
         }
-        enlarge();
-        int next = (head + size) & (elements.length - 1);
-        elements[next] = item;
+        DoubleLinkedNode<Item> oldTail = tail;
+        tail = new DoubleLinkedNode<>();
+        tail.data = item;
+        tail.prev = oldTail;
+        if (oldTail != null) {
+            oldTail.next = tail;
+        } else {
+            head = tail;
+        }
         size++;
     }
 
-    // remove and return the item from the front
     public Item removeFirst() {
         if (size == 0) {
             throw new NoSuchElementException();
         }
-        Item ret = elements[head];
-        elements[head] = null;
-        head = (head + 1) & (elements.length - 1);
-        size--;
-        shrink();
-        return ret;
-    }
-
-    private void shrink() {
-        if ((size == elements.length >> 2) && ((elements.length >> 1) >= DEFAULT_INIT_CAPACITY)) {
-            resize(elements.length >> 1);
+        DoubleLinkedNode<Item> ret = null;
+        if (size == 1) {
+            ret = head;
+            head = tail = null;
+        } else {
+            ret = head;
+            head = head.next;
+            head.prev = null;
         }
+        --size;
+        ret.prev = ret.next = null;
+        return ret.data;
     }
 
-    // remove and return the item from the back
     public Item removeLast() {
         if (size == 0) {
             throw new NoSuchElementException();
         }
-        int tail = (head + size - 1) & (elements.length - 1);
-        Item ret = elements[tail];
-        elements[tail] = null;
-        size--;
-        shrink();
-        return ret;
+        DoubleLinkedNode<Item> ret = null;
+        if (size == 1) {
+            ret = head;
+            head = tail = null;
+        } else {
+            ret = tail;
+            tail = tail.prev;
+            tail.next = null;
+        }
+        --size;
+        ret.prev = ret.next = null;
+        return ret.data;
     }
 
-    // return an iterator over items in order from front to back
+    @Override
+
     public Iterator<Item> iterator() {
-        return new DefaultIterator(head, size);
+        return new FifoIterator<>(head, size);
     }
 
-    private int capacity() {
-        return elements.length;
-    }
+    private class FifoIterator<Item> implements Iterator<Item> {
+        private DoubleLinkedNode<Item> head;
+        private int size;
 
-    private class DefaultIterator implements Iterator<Item> {
-        private int head;
-        private int n;
-
-        public DefaultIterator(int head, int n) {
+        public FifoIterator(DoubleLinkedNode<Item> head, int size) {
             this.head = head;
-            this.n = n;
+            this.size = size;
         }
 
         @Override
         public boolean hasNext() {
-            return n != 0;
+            return size != 0;
         }
 
         @Override
         public Item next() {
-            if (n == 0) {
+            if (size == 0) {
                 throw new NoSuchElementException();
             }
-            Item ret = elements[head];
-            head = (head + 1) & (elements.length - 1);
-            --n;
-            return ret;
+            DoubleLinkedNode<Item> toRet = head;
+            head = head.next;
+            size--;
+            return toRet.data;
         }
     }
 
-    // unit testing (required)
     public static void main(String[] args) {
         Deque<Integer> deque = new Deque<>();
         deque.addFirst(3);
