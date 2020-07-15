@@ -16,7 +16,7 @@ public class Percolation {
         }
         openNum = 0;
         this.n = n;
-
+        // top(v) ---> n*n ---> n*n(mirror) ---> bottom(v)
         wquf = new WeightedQuickUnionUF(2 * this.n * this.n + 2);
         grid = new boolean[this.n * this.n + 2];
         for (int i = 0; i < grid.length; ++i) {
@@ -27,12 +27,14 @@ public class Percolation {
     }
 
     private void initFirstRow() {
+        // connect virtual top to the first row of mirror grid
         for (int i = 1; i <= n; ++i) {
             wquf.union(i, 0);
         }
     }
 
     private void initLastRow() {
+        // connect virtual bottom to the last row of mirror grid
         for (int i = n * (2 * n - 1) + 1; i <= n * 2 * n; ++i) {
             wquf.union(i, 2 * n * n + 1);
         }
@@ -47,7 +49,7 @@ public class Percolation {
     public void open(int row, int col) {
         validate(row, col);
         int elem = (row - 1) * n + col;
-        int mirror = (mirrowRow(row) - 1) * n + col;
+        int mirror = (mirrorRow(row) - 1) * n + col;
         if (grid[elem]) {
             return;
         }
@@ -88,7 +90,7 @@ public class Percolation {
 
     }
 
-    private int mirrowRow(int row) {
+    private int mirrorRow(int row) {
         return 2 * n - row + 1;
     }
 
