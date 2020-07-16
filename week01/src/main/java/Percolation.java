@@ -115,13 +115,13 @@ public class Percolation {
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
         validate(row, col);
-        return grid[(row - 1) * n + col];
+        return grid[elem(row, col)];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         validate(row, col);
-        int elem = (row - 1) * n + col;
+        int elem = elem(row, col);
         return grid[elem] && wquf.find(elem) == wquf.find(0);
     }
 
