@@ -51,7 +51,7 @@ public class Percolation {
         initLastRow();
     }
 
-    // connect virtual top to the first row of mirror grid
+    // connect virtual top to the first row of grid
     private void initFirstRow() {
         for (int i = 1; i <= n; ++i) {
             wquf.union(i, 0);
