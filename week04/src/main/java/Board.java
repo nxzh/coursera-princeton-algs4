@@ -32,7 +32,7 @@ public class Board {
         builder.append(n).append(System.lineSeparator());
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                builder.append(" " + tiles[i][j]);
+                builder.append(String.format(" %2d", tiles[i][j]));
             }
             builder.append(System.lineSeparator());
         }
@@ -149,6 +149,7 @@ public class Board {
     private boolean isBlank(int i, int j) {
         return i * n + j == blank;
     }
+
     private Board makeTwin() {
         int i1 = StdRandom.uniform(n);
         int j1 = StdRandom.uniform(n);
@@ -161,6 +162,7 @@ public class Board {
         swapTitle(newTitles, i1, j1, i2, j2);
         return new Board(newTitles);
     }
+
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
         if (twin == null) {
